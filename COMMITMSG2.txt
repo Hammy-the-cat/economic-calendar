@@ -1,0 +1,1 @@
+feat: add major-only filter and buttons; update script

@@ -51,6 +51,10 @@
         <button class="preset-btn" data-range="next30" onclick="loadData({range:'next30'})">30日間</button>
         <button class="preset-btn" data-before="0" data-after="7" onclick="loadData({before:0, after:7})">7日間</button>
       </div>
+      <div class="buttons" style="margin-top:10px">
+        <button class="preset-btn filter-btn" data-major="false" onclick="loadData({majorOnly:false})">全件</button>
+        <button class="preset-btn filter-btn" data-major="true" onclick="loadData({majorOnly:true})">主要のみ</button>
+      </div>
       <div id="rangeLabel"></div>
     </div>
     <table id="economicTable">
