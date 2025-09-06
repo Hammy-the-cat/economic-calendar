@@ -175,6 +175,22 @@ function inferImportanceFromName(name) {
   return 2;
 }
 
+// ホワイトリスト（日本語名でマッチ）主要指標のみ表示に使用
+const MAJOR_WHITELIST = [
+  /消費者物価指数|CPI/i,
+  /雇用統計|非農業部門雇用者数|NFP/i,
+  /国内総生産|GDP/i,
+  /政策金利|FOMC|金利決定|フェデラルファンド/i,
+  /個人消費支出|PCE/i,
+  /小売売上高/i,
+  /失業率/i,
+  /鉱工業生産|工業生産/i,
+  /ISM|PMI|景況指数/i,
+  /耐久財受注/i,
+  /住宅着工|建築許可/i,
+  /消費者信頼感|ミシガン大学|消費者態度指数/i,
+];
+
 async function fetchCalendarData(apiKey, daysBefore = 2, daysAfter = 14) {
   const today = new Date();
   const start = new Date(today); start.setDate(today.getDate() - daysBefore);
@@ -269,7 +285,7 @@ async function loadData(options = {}) {
     if (labelEl) labelEl.textContent = `表示範囲: ${fmt(start)} 〜 ${fmt(end)}${majorOnly ? '（主要のみ）' : ''}`;
 
     let items = await fetchCalendarData(FRED_API_KEY, before, after);
-    if (majorOnly) items = items.filter(it => (it.importance || 0) >= 5);
+    if (majorOnly) items = items.filter(it => MAJOR_WHITELIST.some(re => re.test(it.indicator || "")));
     if (items.length === 0) {
       displayData(sampleData);
       showError("オンライン取得に失敗したためサンプルを表示しています");
@@ -308,4 +324,3 @@ document.addEventListener("DOMContentLoaded", () => {
   const majorOnly = params.get("major") === '1' || params.get("majorOnly") === 'true' ? true : undefined;
   setTimeout(() => { void loadData({ before, after, range, majorOnly }); }, 600);
 });
-
